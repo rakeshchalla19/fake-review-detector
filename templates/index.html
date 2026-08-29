@@ -1,38 +1,206 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Fake Review Detector</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FakeGuard — AI Fake Review Detector</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    body { font-family: Arial; background:#f4f6f8; display:flex; justify-content:center; padding:50px; }
-    .card { background:#fff; padding:30px; border-radius:12px; box-shadow:0 2px 10px rgba(0,0,0,.1); width:450px; }
-    input, textarea, select { width:100%; padding:10px; margin:8px 0; border:1px solid #ccc; border-radius:6px; box-sizing:border-box; }
-    button { background:#2563eb; color:#fff; padding:12px; width:100%; border:none; border-radius:6px; cursor:pointer; font-size:16px; }
-    button:hover { background:#1d4ed8; }
-    .fake { color:#dc2626; font-weight:bold; font-size:22px; }
-    .genuine { color:#16a34a; font-weight:bold; font-size:22px; }
+    :root {
+      --primary: #4f46e5;
+      --primary-dark: #4338ca;
+      --bg: #0f172a;
+      --card: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --fake: #dc2626;
+      --genuine: #16a34a;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ---------- NAVBAR ---------- */
+    nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 18px 6%; background: rgba(15,23,42,.85);
+      backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .logo { display: flex; align-items: center; gap: 10px; color: #fff; font-weight: 800; font-size: 20px; }
+    .logo-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      display: flex; align-items: center; justify-content: center; font-size: 18px;
+    }
+    nav .badge {
+      font-size: 12px; color: #c7d2fe; background: rgba(99,102,241,.15);
+      border: 1px solid rgba(99,102,241,.4); padding: 6px 14px; border-radius: 999px;
+    }
+
+    /* ---------- HERO ---------- */
+    .hero { text-align: center; padding: 60px 20px 30px; color: #fff; }
+    .hero h1 {
+      font-size: clamp(28px, 5vw, 46px); font-weight: 800; line-height: 1.15;
+      background: linear-gradient(90deg, #a5b4fc, #e0e7ff, #c4b5fd);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .hero p { color: #94a3b8; margin-top: 14px; font-size: 16px; max-width: 620px; margin-inline: auto; }
+    .hero .tags { margin-top: 22px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .tag {
+      font: 125px; color: #cbd5e1; background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.12); padding: 7px 16px; border-radius: 999px;
+    }
+
+    /* ---------- MAIN CARD ---------- */
+    .container { max-width: 640px; margin: 0 auto; padding: 20px 16px 80px; }
+    .card {
+      background: var(--card); border-radius: 22px; padding: 36px;
+      box-shadow: 0 30px 80px rgba(0,0,0,.45);
+    }
+    .card h2 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+    .card .sub { font-size: 13.5px; color: var(--muted); margin-bottom: 24px; }
+
+    label { display: block; font-size: 13px; font-weight: 600; color: #475569; margin: 16px 0 6px; }
+    textarea, input[type=number], select {
+      width: 100%; padding: 13px 14px; font-size: 14.5px; font-family: inherit;
+      border: 1.5px solid #e2e8f0; border-radius: 12px; background: #f8fafc;
+      transition: border .2s, box-shadow .2s;
+    }
+    textarea { resize: vertical; min-height: 110px; }
+    textarea:focus, input:focus, select:focus {
+      outline: none; border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(79,70,229,.12); background: #fff;
+    }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    .btn {
+      margin-top: 26px; width: 100%; padding: 16px; font-size: 16px; font-weight: 700;
+      font-family: inherit; color: #fff; border: none; border-radius: 14px; cursor: pointer;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6 60%, #a855f7);
+      box-shadow: 0 10px 25px rgba(99,102,241,.35);
+      transition: transform .15s, box-shadow .15s;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(99,102,241,.45); }
+    .btn:active { transform: translateY(0); }
+
+    /* ---------- RESULT ---------- */
+    .result {
+      margin-top: 28px; border-radius: 16px; padding: 26px; text-align: center;
+      animation: pop .4s ease; border: 1.5px solid;
+    }
+    @keyframes pop { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: scale(1); } }
+    .result.fake    { background: #fef2f2; border-color: #fecaca; }
+    .result.genuine { background: #f0fdf4; border-color: #bbf7d0; }
+    .result .emoji { font-size: 40px; }
+    .result .verdict { font-size: 24px; font-weight: 800; margin-top: 6px; }
+    .result.fake .verdict { color: var(--fake); }
+    .result.genuine .verdict { color: var(--genuine); }
+
+    /* confidence bar */
+    .conf-wrap { margin-top: 18px; }
+    .conf-label { display: flex; justify-content: space-between; font-size: 12.5px; color: var(--muted); font-weight: 600; }
+    .bar { height: 10px; border-radius: 999px; background: #e2e8f0; margin-top: 6px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 999px; animation: grow 1s ease; }
+    @keyframes grow { from { width: 0; } }
+    .fake .bar-fill    { background: linear-gradient(90deg, #f87171, #dc2626); }
+    .genuine .bar-fill { background: linear-gradient(90deg, #4ade80, #16a34a); }
+
+    /* ---------- HOW IT WORKS ---------- */
+    .section { max-width: 900px; margin: 0 auto 80px; padding: 0 20px; }
+    .section h3 { color: #fff; font-size: 22px; text-align: center; margin-bottom: 26px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; }
+    .feat {
+      background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
+      border-radius: 16px; padding: 24px; color: #cbd5e1;
+    }
+    .feat .ico { font-size: 26px; margin-bottom: 10px; }
+    .feat b { color: #fff; display: block; margin-bottom: 6px; font-size: 15px; }
+    .feat p { font-size: 13.5px; line-height: 1.55; color: #94a3b8; }
+
+    footer { text-align: center; color: #475569; font-size: 13px; padding: 30px 0 40px; }
+
+    @media (max-width: 560px) {
+      .row { grid-template-columns: 1fr; }
+      .card { padding: 26px 20px; }
+    }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h2>🔍 Fake Product Review Detector</h2>
-    <p style="font-size:13px;color:#666;">Text + Behavioral analysis</p>
-    <form method="POST">
-      <textarea name="review" rows="4" placeholder="Paste review here..." required></textarea>
-      <label>Rating (1–5)</label>
-      <input type="number" name="rating" min="1" max="5" value="5" required>
-      <label>Burst score (0 = normal, 1 = burst)</label>
-      <input type="number" name="burst" step="0.01" min="0" max="1" value="0.1" required>
-      <label>Verified purchase</label>
-      <select name="verified"><option value="1">Yes</option><option value="0">No</option></select>
-      <br><br>
-      <button type="submit">Analyze Review</button>
-    </form>
-    {% if result %}
-      <div style="margin-top:20px; text-align:center;">
-        <p class="{{ 'fake' if 'FAKE' in result.label else 'genuine' }}">{{ result.label }}</p>
-        <p>Confidence: {{ result.confidence }}%</p>
-      </div>
-    {% endif %}
+
+  <nav>
+    <div class="logo"><div class="logo-icon">🛡️</div> FakeGuard</div>
+    <div class="badge">AI-Powered Detection</div>
+  </nav>
+
+  <div class="hero">
+    <h1>Detect Fake Product Reviews<br>Before You Trust Them</h1>
+    <p>Our model analyzes <b>text patterns</b> AND <b>behavioral signals</b> — burst activity, verification status & rating extremity — to catch deceptive reviews that ordinary detectors miss.</p>
+    <div class="tags">
+      <span class="tag">🤖 Machine Learning</span>
+      <span class="tag">📊 Behavioral Analysis</span>
+      <span class="tag">⚡ Real-Time Results</span>
+    </div>
   </div>
+
+  <div class="container">
+    <div class="card">
+      <h2>Analyze a Review</h2>
+      <p class="sub">Enter the review details below and get an instant verdict.</p>
+
+      <form method="POST">
+        <label>Review Text</label>
+        <textarea name="review" placeholder="Paste the product review here..." required></textarea>
+
+        <div class="row">
+          <div>
+           <label>Rating (1–5)</label>
+            <input type="number" name="rating" min="1" max="5" value="5" required>
+          </div>
+          >
+            <label>Burst Score (0–1)</label>
+            <input type="number" name="burst" step="0.01" min="0" max="1" value="0.1" required>
+          </div>
+        </div>
+
+        <label>Verified Purchase?</label>
+        <select name="verified">
+          <option value="1">✅ Yes — Verified</option>
+          <option value="0">❌ No — Unverified</option>
+        </select>
+
+        <button class="btn" type="submit">🔍 Analyze Review</button>
+      </form>
+
+      {% if result %}
+        <div class="result {{ 'fake' if 'FAKE' in result.label else 'genuine' }}">
+          <div class="emoji">{{ '⚠️' if 'FAKE' in result.label else '✅' }}</div>
+          <div class="verdict">{{ result.label }}</div>
+          <div class="conf-wrap">
+            <div class="conf-label"><span>Model Confidence</span><span>{{ result.confidence }}%</span></div>
+            <div class="bar"><div class="bar-fill" style="width: {{ result.confidence }}%"></div></div>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Why FakeGuard Is Different</h3>
+    <div class="grid">
+      <div class="feat"><div class="ico">📝</div><b>Text Analysis</b><p>TF-IDF detects promotional language, exaggerated punctuation and repetitive wording typical of fake reviews.</p></div>
+      <div class="feat"><div class="ico">⚡</div><b>Burst Detection</b><p>Catches review flooding — many reviews posted by one account in a short time, a key fake-review signal.</p></div>
+      <div class="feat"><div class="ico">🛒</div><b>Purchase Verification</b><p>Unverified purchases carry higher deception risk — a signal text-only systems completely ignore.</p></div>
+      <div class="feat"><div class="ico">⭐</div><b>Rating Extremity</b><p>Excessive 5★ or 1★ patterns are weighed as deception indicators, improving accuracy further.</p></div>
+    </div>
+  </div>
+
+  <footer>FakeGuard — Applied Data Science Project · Fake Product Review Detection using ML</footer>
+
 </body>
 </html>
