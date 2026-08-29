@@ -3,8 +3,10 @@ import pickle, numpy as np
 from scipy.sparse import hstack, csr_matrix
 
 app = Flask(__name__)
-model = pickle.load(open("model.pkl", "rb"))
-tfidf = pickle.load(open("tfidf.pkl", "rb"))
+import os
+model = pickle.load(open(os.path.join(os.path.dirname(__file__), "model.pkl"), "rb"))
+tfidf = pickle.load(open(os.path.join(os.path.dirname(__file__), "tfidf.pkl"), "rb"))
+
 
 @app.route("/", methods=["GET", "POST"])
 def index():
