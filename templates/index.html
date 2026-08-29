@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Fake Review Detector</title>
+  <style>
+    body { font-family: Arial; background:#f4f6f8; display:flex; justify-content:center; padding:50px; }
+    .card { background:#fff; padding:30px; border-radius:12px; box-shadow:0 2px 10px rgba(0,0,0,.1); width:450px; }
+    input, textarea, select { width:100%; padding:10px; margin:8px 0; border:1px solid #ccc; border-radius:6px; box-sizing:border-box; }
+    button { background:#2563eb; color:#fff; padding:12px; width:100%; border:none; border-radius:6px; cursor:pointer; font-size:16px; }
+    button:hover { background:#1d4ed8; }
+    .fake { color:#dc2626; font-weight:bold; font-size:22px; }
+    .genuine { color:#16a34a; font-weight:bold; font-size:22px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>🔍 Fake Product Review Detector</h2>
+    <p style="font-size:13px;color:#666;">Text + Behavioral analysis</p>
+    <form method="POST">
+      <textarea name="review" rows="4" placeholder="Paste review here..." required></textarea>
+      <label>Rating (1–5)</label>
+      <input type="number" name="rating" min="1" max="5" value="5" required>
+      <label>Burst score (0 = normal, 1 = burst)</label>
+      <input type="number" name="burst" step="0.01" min="0" max="1" value="0.1" required>
+      <label>Verified purchase</label>
+      <select name="verified"><option value="1">Yes</option><option value="0">No</option></select>
+      <br><br>
+      <button type="submit">Analyze Review</button>
+    </form>
+    {% if result %}
+      <div style="margin-top:20px; text-align:center;">
+        <p class="{{ 'fake' if 'FAKE' in result.label else 'genuine' }}">{{ result.label }}</p>
+        <p>Confidence: {{ result.confidence }}%</p>
+      </div>
+    {% endif %}
+  </div>
+</body>
+</html>
