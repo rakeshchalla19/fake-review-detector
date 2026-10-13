@@ -1,0 +1,58 @@
+Deduplication 0
+Deduplication 10000
+Deduplication 20000
+Deduplication 30000
+Deduplication 40000
+Validation majority_baseline 0.0
+Validation logistic_regression 0.9274305118852975
+Validation linear_svm 0.9456900847035377
+{
+  "majority_baseline": {
+    "accuracy": 0.5014262681384101,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "confusion_matrix": [
+      [
+        4043,
+        0
+      ],
+      [
+        4020,
+        0
+      ]
+    ]
+  },
+  "logistic_regression": {
+    "accuracy": 0.9289346397122659,
+    "precision": 0.9436293436293436,
+    "recall": 0.9119402985074627,
+    "f1": 0.9275142314990512,
+    "confusion_matrix": [
+      [
+        3824,
+        219
+      ],
+      [
+        354,
+        3666
+      ]
+    ]
+  },
+  "linear_svm": {
+    "accuracy": 0.9466699739551035,
+    "precision": 0.9521410579345088,
+    "recall": 0.9402985074626866,
+    "f1": 0.9461827284105131,
+    "confusion_matrix": [
+      [
+        3853,
+        190
+      ],
+      [
+        240,
+        3780
+      ]
+    ]
+  }
+}
