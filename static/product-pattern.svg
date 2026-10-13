@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="600" viewBox="0 0 720 600"><g fill="none" stroke="#789983" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" opacity=".23">
+<!-- laptop --><g transform="translate(36 43) rotate(-10 50 35)"><rect x="8" y="0" width="82" height="54" rx="5" fill="#e1ebd6" fill-opacity=".4"/><path d="M0 55h98l8 12H-8zM31 55l3 5h30l3-5"/><path d="M20 13h58M20 22h37M20 31h46"/></g>
+<!-- headphones --><g transform="translate(280 40) rotate(12 30 35)"><path d="M0 37V27a30 30 0 0 1 60 0v10M7 36V27a23 23 0 0 1 46 0v9"/><rect x="-5" y="33" width="15" height="28" rx="6" fill="#eadac5" fill-opacity=".6"/><rect x="50" y="33" width="15" height="28" rx="6" fill="#eadac5" fill-opacity=".6"/><path d="M57 60q0 12-15 12"/></g>
+<!-- kettle --><g transform="translate(517 35) rotate(-8 35 35)"><path d="M8 18h50l8 46q-31 12-61 0zM10 18l5-9h37l6 9M24 8V1h18v7M64 26q30-7 20 22l-20 9M8 29l-22-8 18 30M2 72h68"/><path d="M21 32v22"/></g>
+<!-- smartphone --><g transform="translate(161 176) rotate(12 23 38)"><rect width="46" height="78" rx="8" fill="#e1ebd6" fill-opacity=".45"/><rect x="5" y="9" width="36" height="56" rx="2"/><path d="M18 4h10M18 71h10M14 23h18M14 31h12"/></g>
+<!-- bottle --><g transform="translate(405 172) rotate(-12 22 45)"><rect x="11" y="0" width="24" height="12" rx="3"/><path d="M14 13v11L3 36v48q23 12 46 0V36L32 24V13M3 43h46M3 68h46"/><path d="M16 50v11M24 50v11M32 50v11"/></g>
+<!-- camera --><g transform="translate(613 183) rotate(9 40 30)"><path d="M2 12h17l6-12h27l7 12h18q5 0 5 5v43H-3V17q0-5 5-5z"/><circle cx="40" cy="35" r="19" fill="#eadac5" fill-opacity=".35"/><circle cx="40" cy="35" r="11"/><path d="M6 21h8M63 21h8"/></g>
+<!-- mug --><g transform="translate(42 332) rotate(10 25 30)"><path d="M0 7h54v43q-27 15-54 0zM54 16q35-4 24 24-8 8-24 6M-5 62h67M13-10q-8 8 0 12M28-15q-8 11 0 16M43-10q-8 8 0 12"/></g>
+<!-- sneaker --><g transform="translate(269 337) rotate(-11 45 24)"><path d="M0 6l15-5 24 20 27 6q17 1 26 18H-9V27zM-9 46v9h103V45M28 14l-11 9M39 22l-10 9M52 27l-10 9M0 32h14"/></g>
+<!-- desk lamp --><g transform="translate(521 323) rotate(8 34 38)"><path d="M7 78h69M41 77V43L14 22M5 5l21-8 20 24-41 16zM44 41l21-21"/><circle cx="41" cy="43" r="5"/><path d="M17 36l-4 10M32 31l7 8"/></g>
+<!-- backpack --><g transform="translate(148 473) rotate(-6 29 36)"><path d="M19 0v-7q10-8 20 0v7M0 20q0-21 29-21t29 21v49H0zM6 23h46M14 39h30v23H14zM15 31h27M0 14l-8 6v42l8-4M58 14l8 6v42l-8-4"/></g>
+<!-- blender --><g transform="translate(395 464) rotate(10 27 37)"><path d="M0 0h48l-6 40H7zM48 8q22-3 16 18l-19 4M-4-5h57M8 41l-8 28h51l-9-28M20 10h13M20 20h10M20 30h13"/><circle cx="25" cy="56" r="5"/></g>
+<!-- wristwatch --><g transform="translate(632 474) rotate(-15 24 35)"><path d="M13 0l-2 20M35 0l2 20M11 52l2 21h22l2-21M13 0h22"/><rect x="3" y="17" width="42" height="38" rx="9" fill="#e1ebd6" fill-opacity=".45"/><path d="M24 26v11l9 5M45 29h5v12h-5"/></g>
+<!-- small accent stars --><path d="M233 111v12M227 117h12M461 96v12M455 102h12M123 290v12M117 296h12M375 284v12M369 290h12M670 407v12M664 413h12M73 499v12M67 505h12"/>
+</g></svg>
