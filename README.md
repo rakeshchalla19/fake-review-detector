@@ -6,12 +6,14 @@ A working Flask + scikit-learn application with a responsive HTML/CSS/JavaScript
 
 **Scientific scope:** this is an original-review versus GPT-2-generated-review classifier. The UI labels “Likely Genuine” and “Potentially Fake” are shorthand for those dataset classes, not verified truthfulness. Never use this app alone to accuse a reviewer.
 
-## Delivery status
+## Verified live application
 
-- Application, trained model, evaluation, API tests, and documentation: included.
-- GitHub upload and Render deployment: in progress using the existing `rakeshchalla19/fake-review-detector` repository and connected Free web service.
-- API/inference tests executed locally; see `reports/verification.md`.
-- Visual browser QA and deployed end-to-end verification remain pending.
+- Website: https://fake-review-detector-fjzd.onrender.com/
+- GitHub: https://github.com/rakeshchalla19/fake-review-detector
+- Render Free web service: deployment succeeded; HTTPS health, single-review inference, CSV upload and download, product grouping, explanations and model metrics verified.
+- Local test suite: **26 passed**. See `reports/verification.md` for the verification scope.
+- Desktop browser layout inspected. Actual mobile/tablet device testing remains unperformed.
+- Free hosting can sleep after inactivity and requires a cold start; uninterrupted availability is not promised.
 
 ## Quick start (no training required)
 
@@ -156,15 +158,23 @@ Tests use the included real model and check API/model score consistency, contrib
 Intended account: https://github.com/rakeshchalla19
 Repository: https://github.com/rakeshchalla19/fake-review-detector . This existing repository and connected Render service are used for this project.
 
-Create an empty repository in that account (do not add a remote README), then run in this folder:
+For future changes, clone the existing repository and create a branch:
 
 ```bash
-git init -b main
-git add .
-git commit -m "Build ReviewLens with trained SVM and evaluated pipeline"
-git remote add origin https://github.com/rakeshchalla19/fake-review-detector.git
-git push -u origin main
+git clone https://github.com/rakeshchalla19/fake-review-detector.git
+cd fake-review-detector
+git switch -c my-improvement
 ```
+
+After making and testing changes:
+
+```bash
+git add .
+git commit -m "Describe your improvement"
+git push -u origin my-improvement
+```
+
+Open a pull request on GitHub. The existing repository also retains earlier unused files (`dataset.csv`, `generate_dataset.py`, `train_model.py`, `model.pkl`, `tfidf.pkl`). They belong to the old synthetic-data demo and are not used by ReviewLens. The active pipeline is `models/model.joblib`; reproducible training is `train.py` with the original OSF data. The downloadable project archive contains the active project only.
 
 Authenticate through GitHub's normal sign-in or credential manager. Never put tokens in project files. The model is about 1.1 MB and is deliberately tracked. The original downloaded CSV, virtual environment, secrets, and caches are ignored.
 
