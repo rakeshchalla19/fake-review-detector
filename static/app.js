@@ -56,7 +56,17 @@ function renderPage() {
     const card = el('article', undefined, 'panel result-card');
     const head = el('div', undefined, 'result-head');
     head.append(el('strong', `${String(result.row).padStart(4,'0')} / ${result.product}`), el('span', result.label, `pill ${result.unusual ? 'warning' : ''}`));
-    card.append(head, el('p', result.review, 'review-text'), el('p', `Anomaly score: ${result.score > 0 ? '+' : ''}${result.score.toFixed(4)} · Higher means more unusual against the training baseline; not a probability.`, 'score'));
+    const reviewWhy = el('div', undefined, 'review-why-grid');
+    const reviewColumn = el('section', undefined, 'review-column');
+    reviewColumn.append(el('span', 'ANALYZED REVIEW', 'reason-kicker'), el('p', result.review, 'review-text'));
+    const whyColumn = el('aside', undefined, `why-panel ${result.unusual ? 'warning' : ''}`);
+    whyColumn.append(el('span', 'WHY THIS RESULT?', 'reason-kicker'), el('p', result.explanation || 'The model compares review patterns with its training baseline.', 'why-summary'));
+    const contextSignals = result.context_signals || [];
+    const signalList = el('ul', undefined, 'why-signals');
+    for (const signal of contextSignals) signalList.append(el('li', signal));
+    whyColumn.append(signalList, el('p', 'These are context clues from the supplied data, not proof that a review is fake or genuine.', 'why-note'));
+    reviewWhy.append(reviewColumn, whyColumn);
+    card.append(head, reviewWhy, el('p', `Anomaly score: ${result.score > 0 ? '+' : ''}${result.score.toFixed(4)} · Higher means more unusual against the training baseline; not a probability.`, 'score'));
     const details = el('details'); details.append(el('summary','Inspect supplied history and text signals'));
     const meta = [`Rating: ${result.rating ?? 'not supplied'}`, `Verified purchase: ${result.verified_purchase === null ? 'not supplied' : result.verified_purchase ? 'yes' : 'no'}`, `Helpful votes: ${result.helpful_votes ?? 'not supplied'}`, `Date: ${result.date ?? 'not supplied'}`];
     if (result.reviewer_repeats !== null) meta.push(`This reviewer appears ${result.reviewer_repeats} time(s) in this upload`);
@@ -94,8 +104,8 @@ $('#next-page').addEventListener('click', () => { currentPage++; renderPage(); w
 function csvCell(value) { let text = String(value ?? ''); if (/^[\s]*[=+\-@\t\r]/.test(text)) text = "'" + text; return '"' + text.replaceAll('"','""') + '"'; }
 $('#export').addEventListener('click', () => {
   if (!batch) return;
-  const fields = ['row','product','review','pattern_label','anomaly_score_not_probability','rating','date','verified_purchase','helpful_votes','reviewer_repeats_in_upload','product_day_review_count','nearest_row','text_similarity'];
-  const rows = batch.results.map(r => [r.row,r.product,r.review,r.label,r.score,r.rating,r.date,r.verified_purchase,r.helpful_votes,r.reviewer_repeats,r.product_day_count,r.nearest_row,r.similarity]);
+  const fields = ['row','product','review','pattern_label','why_this_result','context_signals','anomaly_score_not_probability','rating','date','verified_purchase','helpful_votes','reviewer_repeats_in_upload','product_day_review_count','nearest_row','text_similarity'];
+  const rows = batch.results.map(r => [r.row,r.product,r.review,r.label,r.explanation,(r.context_signals || []).join(' | '),r.score,r.rating,r.date,r.verified_purchase,r.helpful_votes,r.reviewer_repeats,r.product_day_count,r.nearest_row,r.similarity]);
   const csv = '\ufeff' + [fields,...rows].map(row => row.map(csvCell).join(',')).join('\r\n');
   const url = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8'})); const link = el('a'); link.href = url; link.download = 'reviewlens-pattern-results.csv'; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
 });

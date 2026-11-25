@@ -38,6 +38,31 @@ def indicators(text):
     promo = [s for s in ["buy now", "must buy", "best ever", "highly recommend", "perfect product", "amazing product", "limited offer"] if s in text.lower()]
     return {"repeated_phrases": repeats[:5], "promotional_phrases": promo, "exclamation_marks": text.count("!")}
 
+def explain_pattern(row, unusual, signals, nearest_row, similarity):
+    """Return a cautious model summary plus observable context from this upload."""
+    if unusual:
+        summary = "The model marked this review as unusual compared with its training baseline. This is not a fake-review verdict."
+    else:
+        summary = "The model found no unusual pattern compared with its training baseline. This does not verify the review as genuine."
+
+    context = []
+    if nearest_row is not None and similarity is not None and similarity >= 0.75:
+        context.append(f"Wording is similar to review row {nearest_row} (text similarity {similarity:.2f}).")
+    if signals["repeated_phrases"]:
+        phrases = ", ".join(f"‘{phrase}’" for phrase in signals["repeated_phrases"][:2])
+        context.append(f"Phrase repeated 3 or more times in this review: {phrases}.")
+    if signals["promotional_phrases"]:
+        context.append("Promotional phrase match: " + ", ".join(signals["promotional_phrases"][:3]) + ".")
+    reviewer_count = row.get("reviewer_batch_count")
+    if reviewer_count is not None and reviewer_count > 1:
+        context.append(f"This reviewer ID appears {reviewer_count} times in the uploaded file.")
+    product_day_count = row.get("product_day_count")
+    if product_day_count is not None and product_day_count > 1:
+        context.append(f"{product_day_count} reviews for this product share this date in the uploaded file.")
+    if not context:
+        context.append("No additional contextual signals were detected in the supplied rows.")
+    return summary, context
+
 def _optional_rating(value, row_number):
     if value is None or not str(value).strip(): return None
     try: number = float(value)
@@ -100,14 +125,21 @@ def analyze(records):
     results = []
     for i, row in enumerate(records):
         nearest = int(nearest_rows[i]) if nearest_rows is not None else None
+        nearest_row = nearest+1 if nearest is not None else None
+        similarity_score = round(float(nearest_scores[i]), 4) if nearest is not None else None
+        row_indicators = indicators(row["review"])
+        explanation, context_signals = explain_pattern(
+            row, bool(unusual[i]), row_indicators, nearest_row, similarity_score
+        )
         results.append({"row": i+1, "review": row["review"], "product": row["product"],
                         "label": "Unusual pattern" if unusual[i] else "Typical pattern", "unusual": bool(unusual[i]),
                         "score": round(float(-raw_scores[i]), 4), "rating": row.get("rating"), "date": row.get("date"),
                         "verified_purchase": row.get("verified_purchase"), "helpful_votes": row.get("helpful_votes"),
                         "reviewer_repeats": None if not row.get("reviewer_id") else row.get("reviewer_batch_count"),
                         "product_day_count": None if not row.get("date") else row.get("product_day_count"),
-                        "indicators": indicators(row["review"]), "nearest_row": nearest+1 if nearest is not None else None,
-                        "similarity": round(float(nearest_scores[i]), 4) if nearest is not None else None})
+                        "indicators": row_indicators, "nearest_row": nearest_row,
+                        "similarity": similarity_score, "explanation": explanation,
+                        "context_signals": context_signals})
     grouped = {}
     for result in results: grouped.setdefault(result["product"], []).append(result)
     groups = []
