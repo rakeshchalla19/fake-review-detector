@@ -4,5 +4,6 @@ __pycache__/
 *.pyc
 .env
 data/reviews.csv
+data/amazon-reviews-2023-All_Beauty.jsonl.gz
 *.zip
 .DS_Store

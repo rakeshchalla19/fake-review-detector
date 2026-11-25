@@ -1,18 +1,19 @@
-"""Download the original OSF release and verify its publisher-supplied SHA-256."""
+"""Download the public All_Beauty review corpus from the Amazon Reviews '23 project."""
 from pathlib import Path
-import hashlib, urllib.request
+import urllib.request
+
 ROOT = Path(__file__).resolve().parents[1]
-URL = 'https://osf.io/download/3vds7/'
-SHA256 = 'ea03422988824bc917b5f7217e3867e27b597c647d5261adfae73cd7a85e1e1a'
+URL = "https://mcauleylab.ucsd.edu/public_datasets/data/amazon_2023/raw/review_categories/All_Beauty.jsonl.gz"
+DEST = ROOT / "data" / "amazon-reviews-2023-All_Beauty.jsonl.gz"
+
 def main():
-    path = ROOT / 'data/reviews.csv'
-    path.parent.mkdir(exist_ok=True)
-    if not path.exists():
-        with urllib.request.urlopen(URL, timeout=120) as r:
-            content = r.read()
-        if hashlib.sha256(content).hexdigest() != SHA256:
-            raise ValueError('Dataset checksum mismatch; inspect the upstream release before proceeding.')
-        path.write_bytes(content)
-    assert hashlib.sha256(path.read_bytes()).hexdigest() == SHA256, 'Dataset checksum mismatch'
-    print('Verified dataset:', path)
-if __name__ == '__main__': main()
+    DEST.parent.mkdir(exist_ok=True)
+    if DEST.exists():
+        print(f"Dataset already exists: {DEST}")
+        return
+    request = urllib.request.Request(URL, headers={"User-Agent": "ReviewLens research project"})
+    with urllib.request.urlopen(request, timeout=180) as response, DEST.open("wb") as output:
+        while chunk := response.read(1024 * 1024): output.write(chunk)
+    print(f"Downloaded dataset: {DEST} ({DEST.stat().st_size:,} bytes)")
+
+if __name__ == "__main__": main()

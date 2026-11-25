@@ -1,4 +1,4 @@
-review,product
-I used these headphones for two weeks. The sound is clear but the cable feels thin.,Headphones
-The sound is clear but the cable feels thin. I used these headphones for two weeks.,Headphones
-This bottle fits in my bag and has not leaked during my commute. The lid is a little stiff.,Water bottle
+text,title,parent_asin,rating,timestamp,user_id,verified_purchase,helpful_vote
+I used these headphones for two weeks. The sound is clear but the cable feels thin.,Everyday use,B0EXAMPLE001,4,1710547200000,reviewer-001,true,2
+The sound is clear but the cable feels thin. I used these headphones for two weeks.,Decent overall,B0EXAMPLE001,4,1710547200000,reviewer-001,true,1
+This bottle fits in my bag and has not leaked during my commute. The lid is a little stiff.,Useful for commuting,B0EXAMPLE002,3,1707523200000,reviewer-002,false,0
